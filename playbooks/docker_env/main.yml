@@ -7,6 +7,7 @@
         name:
           - zip
           - unzip
+          - python-pip
 
     - name: Add Docker repository for CentOS8
       shell:
