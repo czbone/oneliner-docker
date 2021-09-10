@@ -1,0 +1,31 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: install minimal command
+      dnf:
+        name:
+          - zip
+          - unzip
+
+    - name: Add Docker repository
+      shell:
+        cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
+    
+    - name: Install Docker module
+      dnf:
+        name:
+          - docker-ce
+          - docker-ce-cli
+
+    - name: Start Docker
+      service:
+        name: 'docker'
+        state: started
+        enabled: true
+
+    - name: Install Docker compose
+      shell:
+        cmd: 'pip3 install docker-compose'
+
+
