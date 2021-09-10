@@ -7,7 +7,7 @@
         name:
           - zip
           - unzip
-          - python-pip
+          - python3
 
     - name: Add Docker repository for CentOS8
       shell:
@@ -31,15 +31,12 @@
         state: started
         enabled: true
 
-    - name: Install Docker compose for CentOS8
+    - name: Install Docker compose
       shell:
         cmd: 'pip3 install docker-compose'
-      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8')
+  #    when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8')
 
-    - name: Install Docker compose for CentOS7
-      shell:
-        cmd: 'pip install docker-compose'
-      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
-
-
-
+    # - name: Install Docker compose for CentOS7
+    #   shell:
+    #     cmd: 'pip install docker-compose'
+    #   when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
