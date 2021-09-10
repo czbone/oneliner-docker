@@ -18,6 +18,8 @@ Ansibleのローカル実行で、Dockerに必要なモジュールを含めてD
 - docker-compose
 
 # 使い方
-新規にOSをインストールしたサーバに`root`でログインし、構築したい環境のスクリプトを実行します。
-完了後は一旦サーバを再起動してください。
+新規にOSをインストールしたサーバに`root`でログインし、以下の１行のコマンドをそのままコピーして実行します。
 
+## 実行コマンド
+
+curl https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/build_env.sh | bash
