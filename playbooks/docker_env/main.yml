@@ -46,14 +46,14 @@
         cmd: 'yum-config-manager --enable rhel-server-rhscl-7-rpms'
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
 
-    - name: install Python3.9
+    - name: install Python3.8
       package:
         name:
-          - rh-python39
+          - rh-python38
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
 
     - name: Install Docker compose
       shell: |
-        scl enable rh-python39 -- pip3 install docker-compose
+        scl enable rh-python38 -- pip3 install docker-compose
 #      become_user: root
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
