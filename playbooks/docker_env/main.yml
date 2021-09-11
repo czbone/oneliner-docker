@@ -60,4 +60,5 @@
     - name: Install Docker compose
       shell: |
         scl enable rh-python38 -- pip3 install docker-compose
+      become_user: root
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
