@@ -35,19 +35,19 @@
       shell:
         cmd: 'pip3 install docker-compose'
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8')
-      
+
     - name: install Software Collection (SCL)
       package:
         name:
           - centos-release-scl
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
 
-    - name: Add Docker repository for CentOS7
+    - name: Enable Software Collection (SCL) repository
       shell:
         cmd: 'yum-config-manager --enable rhel-server-rhscl-7-rpms'
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
 
-    - name: install Software Collection (SCL)
+    - name: install Python3.8
       package:
         name:
           - rh-python38
@@ -58,6 +58,7 @@
     #     cmd: 'pip install docker-compose'
     #   when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
     - name: Install Docker compose
-      shell:
-        cmd: 'scl enable rh-python38 bash && pip3 install docker-compose'
+      shell: |
+        scl enable rh-python38 bash
+        pip3 install docker-compose
       when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
