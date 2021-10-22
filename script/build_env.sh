@@ -2,14 +2,15 @@
 # 
 # Script Name: build_env.sh
 #
-# Version:      1.0.0
+# Version:      1.1.0
 # Author:       Naoki Hirata
-# Date:         2021-09-07
+# Date:         2021-10-22
 # Usage:        build_env.sh [-test]
 # Options:      -test      test mode execution with the latest source package
 # Description:  This script builds Docker server environment with the one-liner command.
 # Version History:
 #               1.0.0  (2021-09-07) initial version
+#               1.1.0  (2021-10-22) Rock Linux, Alma Linux supported
 # License:      MIT License
 
 # Define macro parameter
@@ -29,6 +30,7 @@ fi
 
 # Check os version
 declare OS="unsupported os"
+declare DIST_NAME="not ditected"
 
 if [ "$(uname)" == 'Darwin' ]; then
     OS='Mac'
@@ -38,16 +40,21 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
     RELEASE_FILE=/etc/os-release
     if grep '^NAME="CentOS' ${RELEASE_FILE} >/dev/null; then
         OS="CentOS"
+        DIST_NAME="CentOS"
     elif grep '^NAME="Rocky Linux' ${RELEASE_FILE} >/dev/null; then
         OS="CentOS"
+        DIST_NAME="Rocky Linux"
     elif grep '^NAME="AlmaLinux' ${RELEASE_FILE} >/dev/null; then
         OS="CentOS"
+        DIST_NAME="Alma Linux"
     elif grep '^NAME="Amazon' ${RELEASE_FILE} >/dev/null; then
         OS="Amazon Linux"
+        DIST_NAME="Amazon Linux"
         uname -a
         exit 1
     elif grep '^NAME="Ubuntu' ${RELEASE_FILE} >/dev/null; then
         OS="Ubuntu"
+        DIST_NAME="Ubuntu"
     else
         echo "Your platform is not supported."
         uname -a
@@ -64,8 +71,8 @@ else
 fi
 
 echo "########################################################################"
-echo "# $OS                                                                  #"
-echo "# START BUILDING ENVIRONMENT                                           #"
+echo "# $DIST_NAME"
+echo "# START BUILDING ENVIRONMENT"
 echo "########################################################################"
 
 # Get test mode

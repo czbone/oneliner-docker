@@ -2,7 +2,9 @@
 サーバに`root`ログインし１行のコマンドを実行するだけでDockerのサーバ環境が構築できるスクリプトです。  
 
 ## 対象OS
-- CentOS 8, CentOS 7
+- CentOS Linux v7, v8
+- Rocky Linux v8
+- Alma Linux v8
 
 ## ライセンス
 
