@@ -8,25 +8,10 @@
           - zip
           - unzip
 
-    - name: Add Docker repository for CentOS8
+    - name: Add Docker repository for CentOS
       shell:
         cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8')
-
-    - name: Add Docker repository for CentOS7
-      shell:
-        cmd: 'yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7')
-    
-    - name: Add Docker repository for Rocky Linux
-      shell:
-        cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-      when: (ansible_distribution == 'Rocky')
-
-    - name: Add Docker repository for Alma Linux
-      shell:
-        cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-      when: (ansible_distribution == 'AlmaLinux')
+      when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux')
 
     - name: Install Docker module
       package:
@@ -43,7 +28,7 @@
     - name: Install Docker compose for CentOS8
       shell:
         cmd: 'pip3 install docker-compose'
-      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8')
+      when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8') or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux'
 
     - name: Install Docker compose for CentOS7
       shell: |
