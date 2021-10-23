@@ -8,20 +8,14 @@
           - zip
           - unzip
 
-    # - name: Add Docker repository for CentOS
-    #   shell:
-    #     cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-    #   when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux')
     - name: Add Docker repository for CentOS
-      dnf:
-        name: https://download.docker.com/linux/centos/docker-ce.repo
-        state: present
+      shell:
+        cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
       when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux')
 
     - name: Install Docker module
       package:
         name:
-          - config-manager
           - docker-ce
           - docker-ce-cli
 
