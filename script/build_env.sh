@@ -78,7 +78,7 @@ echo "########################################################################"
 # Get test mode
 if [ "$1" == '-test' ]; then
     readonly TEST_MODE="true"
-    
+
     echo "################# START TEST MODE #################"
 else
     readonly TEST_MODE="false"
@@ -87,13 +87,16 @@ fi
 declare INSTALL_PACKAGE_CMD=""
 if [ $OS == 'CentOS' ]; then
     INSTALL_PACKAGE_CMD="yum -y install"
-    
+
+    # Install required command
+    yum -y install tar
+
     # Repository update for latest ansible
     yum -y install epel-release
 elif [ $OS == 'Ubuntu' ]; then
     if ! type -P ansible >/dev/null ; then
         INSTALL_PACKAGE_CMD="apt -y install"
-    
+
         # Repository update for ansible
         apt -y update
         apt -y upgrade
