@@ -11,6 +11,7 @@
 # Version History:
 #               1.0.0  (2021-09-07) initial version
 #               1.1.0  (2021-10-22) Rock Linux, Alma Linux supported
+#               1.2.0  (2022-09-19) CentOS9 supported
 # License:      MIT License
 
 # Define macro parameter
@@ -41,6 +42,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
     if grep '^NAME="CentOS' ${RELEASE_FILE} >/dev/null; then
         OS="CentOS"
         DIST_NAME="CentOS"
+        OS_VERSION=$(. /etc/os-release; echo $VERSION_ID)
     elif grep '^NAME="Rocky Linux' ${RELEASE_FILE} >/dev/null; then
         OS="CentOS"
         DIST_NAME="Rocky Linux"
@@ -89,10 +91,14 @@ if [ $OS == 'CentOS' ]; then
     INSTALL_PACKAGE_CMD="yum -y install"
 
     # Install required command
-    yum -y install tar
+    $INSTALL_PACKAGE_CMD tar
 
-    # Repository update for latest ansible
-    yum -y install epel-release
+    if [ $((OS_VERSION)) -ge 9 ]; then
+        $INSTALL_PACKAGE_CMD ansible-core
+    else
+        # Repository update for latest ansible
+        $INSTALL_PACKAGE_CMD epel-release
+    fi
 elif [ $OS == 'Ubuntu' ]; then
     if ! type -P ansible >/dev/null ; then
         INSTALL_PACKAGE_CMD="apt -y install"
