@@ -97,7 +97,7 @@ if [ $OS == 'CentOS' ]; then
         $INSTALL_PACKAGE_CMD ansible-core
     else
         # Repository update for latest ansible
-        $INSTALL_PACKAGE_CMD epel-release
+        #$INSTALL_PACKAGE_CMD epel-release
     fi
 elif [ $OS == 'Ubuntu' ]; then
     if ! type -P ansible >/dev/null ; then
