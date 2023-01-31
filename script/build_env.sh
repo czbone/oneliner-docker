@@ -95,10 +95,11 @@ if [ $OS == 'CentOS' ]; then
 
     if [ $((OS_VERSION)) -ge 9 ]; then
         $INSTALL_PACKAGE_CMD ansible-core
+    fi
     #else
         # Repository update for latest ansible
         #$INSTALL_PACKAGE_CMD epel-release
-    fi
+    #fi
 elif [ $OS == 'Ubuntu' ]; then
     if ! type -P ansible >/dev/null ; then
         INSTALL_PACKAGE_CMD="apt -y install"
