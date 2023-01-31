@@ -10,10 +10,10 @@
           - python3
           - python3-pip
 
-    - name: Add Docker repository for CentOS
-      shell:
-        cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-      when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux')
+    # - name: Add Docker repository for CentOS
+    #   shell:
+    #     cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
+    #   when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky' or ansible_distribution == 'AlmaLinux')
 
     - name: Install Docker module
       package:
