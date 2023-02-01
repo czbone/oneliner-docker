@@ -1,9 +1,11 @@
 # 1行でDockerサーバ環境構築
-サーバに`root`ログインし１行のコマンドを実行するだけでDockerのサーバ環境が構築できるスクリプトです。  
+サーバに`root`ログインし１行のコマンドを実行するだけでDockerのサーバ環境が構築できるスクリプトです。
 
 ## 対象OS
 - CentOS Stream 9
 - CentOS Stream 8
+- Ubuntu 20
+- Ubuntu 18
 
 ## ライセンス
 
