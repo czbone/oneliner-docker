@@ -2,16 +2,17 @@
 # 
 # Script Name: build_env.sh
 #
-# Version:      1.1.0
+# Version:      1.3.0
 # Author:       Naoki Hirata
-# Date:         2021-10-22
+# Date:         2023-02-01
 # Usage:        build_env.sh [-test]
 # Options:      -test      test mode execution with the latest source package
 # Description:  This script builds Docker server environment with the one-liner command.
 # Version History:
 #               1.0.0  (2021-09-07) initial version
-#               1.1.0  (2021-10-22) Rock Linux, Alma Linux supported
+#               1.1.0  (2021-10-22) Rocky Linux, Alma Linux supported
 #               1.2.0  (2022-09-19) CentOS9 supported
+#               1.3.0  (2023-02-01) remove Rocky Linux, Alma Linux
 # License:      MIT License
 
 # Define macro parameter
@@ -43,12 +44,6 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
         OS="CentOS"
         DIST_NAME="CentOS"
         OS_VERSION=$(. /etc/os-release; echo $VERSION_ID)
-    elif grep '^NAME="Rocky Linux' ${RELEASE_FILE} >/dev/null; then
-        OS="CentOS"
-        DIST_NAME="Rocky Linux"
-    elif grep '^NAME="AlmaLinux' ${RELEASE_FILE} >/dev/null; then
-        OS="CentOS"
-        DIST_NAME="Alma Linux"
     elif grep '^NAME="Amazon' ${RELEASE_FILE} >/dev/null; then
         OS="Amazon Linux"
         DIST_NAME="Amazon Linux"
