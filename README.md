@@ -4,8 +4,6 @@
 ## 対象OS
 - CentOS Stream 9
 - CentOS Stream 8
-- Rocky Linux v8
-- Alma Linux v8
 
 ## ライセンス
 
@@ -18,7 +16,7 @@ Ansibleのローカル実行で、Dockerに必要なモジュールを含めてD
 
 - docker-ce
 - docker-ce-cli
-- docker-compose
+- docker-compose-plugin
 
 # 使い方
 新規にOSをインストールしたサーバに`root`でログインし、以下の１行のコマンドをそのままコピーして実行します。
