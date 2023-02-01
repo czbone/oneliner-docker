@@ -2,7 +2,6 @@
 - name: Add Docker repository for CentOS
   shell:
     cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
-#  when: ansible_distribution == 'CentOS'
 
 - name: Install Docker module
   package:
