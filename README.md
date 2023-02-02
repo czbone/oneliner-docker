@@ -4,6 +4,7 @@
 ## 対象OS
 - CentOS Stream 9
 - CentOS Stream 8
+- Ubuntu 22
 - Ubuntu 20
 - Ubuntu 18
 
