@@ -1,5 +1,5 @@
 #!/bin/bash
-# 
+#
 # Script Name: build_env.sh
 #
 # Version:      1.3.0
@@ -20,6 +20,7 @@ readonly GITHUB_USER="czbone"
 readonly GITHUB_REPO="oneliner-docker"
 readonly WORK_DIR=/root/${GITHUB_REPO}_work
 readonly PLAYBOOK="docker_env"
+readonly LOG_PATH="/var/log/ansible.log"
 
 # check root user
 readonly USERID=`id | sed 's/uid=\([0-9]*\)(.*/\1/'`
@@ -132,7 +133,7 @@ savefilelist=`ls -1`
 
 # Download archived repository
 echo "########################################################################"
-echo "Start download GitHub repository ${GITHUB_USER}/${GITHUB_REPO}" 
+echo "Start download GitHub repository ${GITHUB_USER}/${GITHUB_REPO}"
 curl -s -o ${filepath} -L $url
 
 # Remove old files
@@ -155,5 +156,6 @@ echo ${filename}" unarchived"
 
 # launch ansible
 cd ${WORK_DIR}/${GITHUB_REPO}/playbooks/${PLAYBOOK}
+export ANSIBLE_LOG_PATH=${LOG_PATH}
 ansible-galaxy install --role-file=requirements.yml --roles-path=/etc/ansible/roles --force
 ansible-playbook -i localhost, main.yml
