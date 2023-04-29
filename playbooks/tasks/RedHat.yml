@@ -1,0 +1,17 @@
+---
+- name: Add Docker repository for CentOS
+  shell:
+    cmd: 'dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'
+
+- name: Install Docker module
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose-plugin
+
+- name: Start Docker
+  service:
+    name: docker
+    state: started
+    enabled: true
