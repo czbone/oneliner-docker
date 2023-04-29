@@ -13,13 +13,13 @@
 #               1.1.0  (2021-10-22) Rocky Linux, Alma Linux supported
 #               1.2.0  (2022-09-19) CentOS9 supported
 #               1.3.0  (2023-02-01) remove Rocky Linux, Alma Linux
+#               1.4.0  (2023-04-29) change ansible directory
 # License:      MIT License
 
 # Define macro parameter
 readonly GITHUB_USER="czbone"
 readonly GITHUB_REPO="oneliner-docker"
 readonly WORK_DIR=/root/${GITHUB_REPO}_work
-readonly PLAYBOOK="docker_env"
 readonly LOG_PATH="/var/log/ansible.log"
 
 # check root user
@@ -155,7 +155,7 @@ mv ${destdirname} ${GITHUB_REPO}
 echo ${filename}" unarchived"
 
 # launch ansible
-cd ${WORK_DIR}/${GITHUB_REPO}/playbooks/${PLAYBOOK}
+cd ${WORK_DIR}/${GITHUB_REPO}/playbooks
 export ANSIBLE_LOG_PATH=${LOG_PATH}
 ansible-galaxy install --role-file=requirements.yml --roles-path=/etc/ansible/roles --force
 ansible-playbook -i localhost, main.yml
