@@ -1,17 +1,12 @@
 - hosts: localhost
   connection: local
 
+  roles:
+    - geerlingguy.docker
+
   tasks:
     - name: Install minimal command
       package:
         name:
           - zip
           - unzip
-
-    - name: Install Docker(CentOS)
-      import_tasks: ./tasks/RedHat.yml
-      when: ansible_os_family == 'RedHat'
-
-    - name: Install Docker(Ubuntu)
-      import_tasks: ./tasks/Debian.yml
-      when: ansible_os_family == 'Debian'
