@@ -1,6 +1,6 @@
 # 1行でDockerサーバ環境構築
 
-サーバに`root`ログインし１行のコマンドを実行するだけでDockerのサーバ環境が構築できるスクリプトです。
+サーバに`root`ログインし１行のコマンドを実行するだけでDocker環境が構築できるスクリプトです。
 
 ## 対象OS
 
@@ -13,13 +13,11 @@
 
 # 内容
 
-Ansibleのローカル実行で、Dockerに必要なモジュールを含めてDocker環境を構築します。
+Ansibleのローカル実行でDocker環境を構築します。
 
-## 主なインストールモジュール
+## インストールモジュール
 
-- docker-ce
-- docker-ce-cli
-- docker-compose-plugin
+- docker v27
 
 # 使い方
 
