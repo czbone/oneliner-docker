@@ -28,5 +28,5 @@ Ansibleのローカル実行で、Dockerに必要なモジュールを含めてD
 ## 実行コマンド
 
 ```
-curl https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/build_env.sh | bash
+curl https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/start.sh | bash
 ```
