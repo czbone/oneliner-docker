@@ -4,7 +4,7 @@
 #
 # Version:      6.1
 # Author:       Naoki Hirata
-# Date:         2024-07-03
+# Date:         2026-02-24
 # Usage:        start.sh [-test] [--help]
 # Options:      -test      test mode execution with the latest source package
 #               --help     show this help message
