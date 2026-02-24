@@ -4,8 +4,7 @@
 
 ## 対象OS
 
-- Ubuntu 22
-- Ubuntu 20
+- Ubuntu 24
 
 ## ライセンス
 
@@ -17,14 +16,18 @@ Ansibleのローカル実行でDocker環境を構築します。
 
 ## インストールモジュール
 
-- docker v27
+- geerlingguy.docker (Ansible Galaxy ロール) で Docker をインストール
 
 # 使い方
 
-新規にOSをインストールしたサーバに`root`でログインし、以下の１行のコマンドをそのままコピーして実行します。
+新規にOSをインストールしたサーバに`root`でログインし、以下の１行のコマンドをそのままコピーして実行します。一般ユーザーでログインしている場合は `sudo` を付けてください。
 
 ## 実行コマンド
 
 ```
-curl https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/start.sh | bash
+curl -fsSL https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/start.sh | bash
 ```
+
+オプション（`bash -s --` 経由で渡す）:
+- `-test` … 最新の master ブランチを使用（テスト用）
+- `--help` … ヘルプを表示

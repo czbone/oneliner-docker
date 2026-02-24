@@ -2,15 +2,71 @@
 #
 # Script Name: start.sh
 #
-# Version:      6.0
+# Version:      6.1
 # Author:       Naoki Hirata
 # Date:         2024-07-03
-# Usage:        start.sh [-test]
+# Usage:        start.sh [-test] [--help]
 # Options:      -test      test mode execution with the latest source package
+#               --help     show this help message
 # Description:  This script builds server environment by one-liner command.
 # Version History:
+#               6.1  (2025-02-24) add set -e, log functions, --help, error handling
 #               6.0  (2024-07-03) renewal release limited to Ubuntu
 # License:      MIT License
+
+set -e
+set -o pipefail
+
+# Colors
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly BOLD='\033[1m'
+readonly NC='\033[0m'
+
+log_info() {
+    echo -e "${GREEN}→${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}!${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+log_step() {
+    echo -e "${BLUE}${BOLD}==>${NC}${BOLD} $1${NC}"
+}
+
+show_help() {
+    cat <<EOF
+oneliner-docker - 1行でDockerサーバ環境構築
+
+Usage:
+  curl -fsSL https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/start.sh | bash
+  curl -fsSL ... | bash -s -- [-test] [--help]
+
+Options:
+  -test      Use latest master branch instead of latest release tag (for testing)
+  --help     Show this help message
+
+Target OS: Ubuntu 24
+
+EOF
+}
+
+# Parse --help before other checks
+for arg in "$@"; do
+    case "$arg" in
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+    esac
+done
 
 # Define macro parameter
 readonly GITHUB_USER="czbone"
@@ -20,57 +76,48 @@ readonly WORK_DIR=/root/${GITHUB_REPO}_work
 readonly INSTALL_PACKAGE_CMD="apt -y install"
 
 # check root user
-readonly USERID=`id | sed 's/uid=\([0-9]*\)(.*/\1/'`
-echo $USERID;
-if [ $USERID -ne 0 ]
-then
-    echo "error: can only excute by root"
+if [ "$(id -u)" -ne 0 ]; then
+    log_error "This script must be run as root."
+    echo
+    echo "Please run with sudo:"
+    echo "  curl -fsSL https://raw.githubusercontent.com/czbone/oneliner-docker/master/script/start.sh | sudo bash"
     exit 1
 fi
 
 # Check os version
-declare OS="unsupported os"
 declare DIST_NAME=""
+RELEASE_FILE=/etc/os-release
 
-if [ "$(uname)" == 'Darwin' ]; then
-    OS='Mac'
-elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
-    RELEASE_FILE=/etc/os-release
-    if grep '^NAME="CentOS' ${RELEASE_FILE} >/dev/null; then
-        OS="CentOS"
-        #DIST_NAME="CentOS"
-    elif grep '^NAME="Ubuntu' ${RELEASE_FILE} >/dev/null; then
-        OS="Ubuntu"
-        DIST_NAME="Ubuntu"
-    fi
+if [ -f "${RELEASE_FILE}" ] && grep -q '^NAME="Ubuntu' "${RELEASE_FILE}"; then
+    DIST_NAME="Ubuntu"
 fi
 
 # Exit if unsupported os
 if [ "${DIST_NAME}" == '' ]; then
-    echo "Your platform is not supported."
+    log_error "Your platform is not supported."
     uname -a
     exit 1
 fi
 
-echo "########################################################################"
-echo "# $DIST_NAME"
-echo "# START BUILDING ENVIRONMENT"
-echo "########################################################################"
+log_step "${DIST_NAME} - START BUILDING ENVIRONMENT"
 
 # Get test mode
 if [ "$1" == '-test' ]; then
     readonly TEST_MODE=true
-
-    echo ">>>>>>>>>>>>>>>>>>>>>> START TEST MODE <<<<<<<<<<<<<<<<<<<<<<"
+    log_info "Test mode: using latest master branch"
 else
     readonly TEST_MODE=false
 fi
 
 # Install ansible command
-if ! type -P ansible >/dev/null ; then
+if ! type -P ansible >/dev/null 2>&1; then
+    log_step "Installing Ansible"
     ${INSTALL_PACKAGE_CMD} software-properties-common
     add-apt-repository --yes --update ppa:ansible/ansible
     ${INSTALL_PACKAGE_CMD} ansible-core
+    log_info "Ansible installed"
+else
+    log_info "Ansible is already installed"
 fi
 
 # Download the latest repository archive
@@ -78,47 +125,59 @@ if ${TEST_MODE}; then
     url="https://github.com/${GITHUB_USER}/${GITHUB_REPO}/archive/master.tar.gz"
     version="new"
 else
-    url=`curl -s "https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/tags" | grep "tarball_url" | \
-        sed -n '/[ \t]*"tarball_url"/p' | head -n 1 | \
-        sed -e 's/[ \t]*".*":[ \t]*"\(.*\)".*/\1/'`
-    if [ "${url}" == '' ]; then
-        echo "Not found archive with tag."
+    set +e
+    url=$(curl -sf "https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/tags" 2>/dev/null | \
+        grep '"tarball_url"' | head -n 1 | \
+        sed -e 's/.*"tarball_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+    set -e
+    if [ -z "${url}" ]; then
+        log_error "Could not find release tag. Use -test to try latest master."
         exit 1
     fi
-    version=`basename $url | sed -e 's/v\([0-9\.]*\)/\1/'`
+    version=$(basename "$url" | sed -e 's/v\([0-9\.]*\)/\1/')
+    [ -z "${version}" ] && version="latest"
 fi
 filename=${GITHUB_REPO}_${version}.tar.gz
-filepath=${WORK_DIR}/$filename
+filepath=${WORK_DIR}/${filename}
 
 # Set current directory
 mkdir -p ${WORK_DIR}
 cd ${WORK_DIR}
-savefilelist=`ls -1`
+savefilelist=$(ls -1 2>/dev/null || true)
 
 # Download archived repository
-echo "########################################################################"
-echo "Start download GitHub repository ${GITHUB_USER}/${GITHUB_REPO}"
-curl -s -o ${filepath} -L $url
+log_step "Downloading ${GITHUB_USER}/${GITHUB_REPO}"
+if ! curl -fsSL -o "${filepath}" "${url}"; then
+    log_error "Download failed: ${url}"
+    exit 1
+fi
+if [ ! -s "${filepath}" ]; then
+    log_error "Downloaded file is empty"
+    exit 1
+fi
 
 # Remove old files
 for file in $savefilelist; do
-    if [ ${file} != ${filename} ]
-    then
+    [ -z "${file}" ] && continue
+    if [ "${file}" != "${filename}" ]; then
         rm -rf "${file}"
     fi
 done
 
 # Get archive directory name
-destdir=`tar tzf ${filepath} | head -n 1`
-destdirname=`basename $destdir`
+destdir=$(tar tzf "${filepath}" | head -n 1)
+destdirname=$(basename "$destdir")
 
 # Unarchive repository
-tar xzf ${filename}
+tar xzf "${filename}"
 find ./ -type f -name ".gitkeep" -delete
-mv ${destdirname} ${GITHUB_REPO}
-echo ${filename}" unarchived"
+mv "${destdirname}" "${GITHUB_REPO}"
+log_info "${filename} unarchived"
 
 # launch ansible
+log_step "Running Ansible playbook"
 cd ${WORK_DIR}/${GITHUB_REPO}/playbooks/${PLAYBOOK}
 ansible-galaxy install --role-file=requirements.yml
 ansible-playbook -i localhost, main.yml
+
+log_step "Docker environment setup complete"
